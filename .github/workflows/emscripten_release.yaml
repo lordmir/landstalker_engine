@@ -7,6 +7,9 @@ jobs:
   build:
     name: Emscriptem/WASM release build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull_requests: write
     steps:
       - name: Checkout sources
         uses: actions/checkout@v5
@@ -92,7 +95,7 @@ jobs:
 
       - name: Publish page (branch)
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name != 'pull_request' && steps.extract_branch.outputs.branch != 'master' }}
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{github.workspace}}/html
