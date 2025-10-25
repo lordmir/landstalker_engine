@@ -1,3 +1,0 @@
-[submodule "vendored/SDL"]
-	path = third_party/SDL
-	url = git@github.com:libsdl-org/SDL.git
