@@ -34,6 +34,7 @@ jobs:
       - name: Checkout emsdk
         uses: actions/checkout@v5
         with:
+          repository: emscripten-core/emsdk
           path: emsdk
 
       - name: Install emsdk
