@@ -137,7 +137,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
     main_font = load_tex_from_bytes(read_bytes(std::filesystem::path(ASSETS_PATH "/graphics/fonts/mainfont.1bpp")), 16, 15, 1);
-
+    SDL_Rect textarea = {0, 0, 800, 600};
+    SDL_SetTextInputArea(window, &textarea, 0);
     SDL_StartTextInput(window);
     
     return SDL_APP_CONTINUE;
