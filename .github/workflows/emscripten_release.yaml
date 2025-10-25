@@ -53,7 +53,7 @@ jobs:
       - name: Build
         working-directory: ${{github.workspace}}/landstalker_engine/build
         run: |
-          source ../emsdk/emsdk_env.sh
+          source ../../emsdk/emsdk_env.sh
           emmake make -j8
 
       - name: Compress artifacts
