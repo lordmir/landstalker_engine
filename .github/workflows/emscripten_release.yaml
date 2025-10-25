@@ -69,17 +69,11 @@ jobs:
           path: ${{github.workspace}}/landstalker_engine/build/landstalker_engine_emscripten.tar.gz
 
       - name: Copy artifacts to root
-        working-directory: ${{github.workspace}}/
+        working-directory: ${{github.workspace}}
         run: |
-          mkdir html
-          cp ${{github.workspace}}/landstalker_engine/build/dds520.html html/index.html
-          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,wasm} html
-
-      - name: Upload static files as artifact
-        id: deployment
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ${{github.workspace}}/html
+          mkdir ${{github.workspace}}/html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.html ${{github.workspace}}/html/index.html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,wasm} ${{github.workspace}}/html
 
       - name: Extract branch name
         shell: bash

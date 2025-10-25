@@ -2,6 +2,9 @@
 
 This project aims to be a re-implementation of the DDS520 Engine used by Landstalker, ported to modern systems.
 
+## Live browser demo
+The web browser demo is [here](https://lordmir.github.io/landstalker_engine/). This reflects the current state of the repository.
+
 ## Rationale
 
 After developing the [Landstalker Editor](https://github.com/lordmir/landstalker_editor) and working on the [Landstalker Disassembly](https://github.com/lordmir/landstalker_disasm), it became apparent that the technical limitations of building ROMs for the Sega Genesis / Megadrive were too significant to allow other users to build their own versions of the game. Additionally, the data format of the extracted maps (in their original form) are too complex to be easily editable.
