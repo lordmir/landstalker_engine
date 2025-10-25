@@ -59,7 +59,7 @@ jobs:
       - name: Compress artifacts
         working-directory: ${{github.workspace}}/landstalker_engine/build
         shell: bash
-        run: tar zvcf landstalker_engine.tar.gz dds520.wasm dds520.js dds520.html
+        run: tar zvcf landstalker_engine_emscripten.tar.gz dds520.wasm dds520.js dds520.html
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
