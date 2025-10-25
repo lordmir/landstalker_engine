@@ -3,8 +3,6 @@ on:
   push:
   release:
   pull_request:
-    branches:
-      - master
 jobs:
   build:
     name: Emscriptem/WASM release build
@@ -71,7 +69,8 @@ jobs:
         working-directory: ${{github.workspace}}/
         run: |
           mkdir html
-          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,html,wasm} html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.html html/index.html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,wasm} html
 
       - name: Upload static files as artifact
         id: deployment
@@ -79,17 +78,40 @@ jobs:
         with:
           path: ${{github.workspace}}/html
 
-  deploy:
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Publish page (master)
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ steps.extract_branch.outputs.branch == 'master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/html
+
+      - name: Publish page (branch)
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.event_name != 'pull_request' && steps.extract_branch.outputs.branch != 'master' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/html
+          destination_dir: ./${{ steps.extract_branch.outputs.branch }}
+
+      - name: Publish page (PR)
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/html
+          destination_dir: PR-${{ github.event.number }}
+
+      - name: Update comment
+        uses: hasura/comment-progress@v2.2.0
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          number: ${{ github.event.number }}
+          id: deploy-preview
+          message: "A preview of ${{ github.event.after }} is uploaded and can be seen here:\n\n ✨ https://lordmir.github.io/landstalker_engine/${{ github.event.number }} ✨\n\nChanges may take a few minutes to propagate."
