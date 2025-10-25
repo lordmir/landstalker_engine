@@ -7,7 +7,7 @@ on:
       - master
 jobs:
   build:
-    name: Emscriptem/WEBM release build
+    name: Emscriptem/WASM release build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -71,7 +71,7 @@ jobs:
         working-directory: ${{github.workspace}}/
         run: |
           mkdir html
-          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,html,webm} html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,html,wasm} html
 
       - name: Upload static files as artifact
         id: deployment
