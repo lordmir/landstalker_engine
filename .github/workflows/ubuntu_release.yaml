@@ -1,0 +1,51 @@
+name: "build-release-ubuntu"
+on:
+  push:
+  release:
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: Ubuntu release build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        working-directory: ${{github.workspace}}
+        uses: actions/checkout@v4
+        with:
+          path: landstalker_engine
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+             sudo apt-get update
+             sudo apt-get install -y \
+                gcc-11 \
+                g++-11 \
+                cmake \
+                libx11-dev \
+                xserver-xorg-dev \
+                xorg-dev \
+                libwayland0
+
+      - name: 'Configure'
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          cmake -S . -B build
+
+      - name: 'Build'
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          cmake --build build --config Release --verbose
+
+      - name: Compress artifacts
+        working-directory: ${{github.workspace}}/landstalker_engine/build
+        shell: bash
+        run: tar zvcf landstalker_engine.tar.gz dds520 libSDL3.so assets/
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: landstalker_engine_binary_ubuntu
+          path: ${{github.workspace}}/landstalker_engine/build/landstalker_engine.tar.gz
