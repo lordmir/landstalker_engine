@@ -1,4 +1,4 @@
-name: "build-release-ubuntu"
+name: "build-release-emscripten"
 on:
   push:
   release:
@@ -7,7 +7,7 @@ on:
       - master
 jobs:
   build:
-    name: Ubuntu release build
+    name: Emscriptem/WEBM release build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
