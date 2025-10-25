@@ -40,7 +40,6 @@ jobs:
       - name: Install emsdk
         working-directory: ${{github.workspace}}/emsdk
         run: |
-          ./emsdk update
           ./emsdk install latest
           ./emsdk activate latest
           source ./emsdk_env.sh
