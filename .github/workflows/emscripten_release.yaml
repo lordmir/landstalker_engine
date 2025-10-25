@@ -1,0 +1,89 @@
+name: "build-release-ubuntu"
+on:
+  push:
+  release:
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    name: Ubuntu release build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+        with:
+          path: landstalker_engine
+          submodules: 'recursive'
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+             sudo apt-get update
+             sudo apt-get install -y \
+                gcc-11 \
+                g++-11 \
+                cmake \
+                libx11-dev \
+                xserver-xorg-dev \
+                xorg-dev \
+                libwayland-server0 \
+                libwayland-cursor0 \
+                libwayland-client0
+
+      - name: Checkout emsdk
+        uses: actions/checkout@v5
+        with:
+          path: emsdk
+
+      - name: Install emsdk
+        working-directory: ${{github.workspace}}/emsdk
+        run: |
+          ./emsdk update
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+
+      - name: Configure
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          emcmake cmake -S . -B build
+
+      - name: Build
+        working-directory: ${{github.workspace}}/landstalker_engine/build
+        run: |
+          emmake make -j8
+
+      - name: Compress artifacts
+        working-directory: ${{github.workspace}}/landstalker_engine/build
+        shell: bash
+        run: tar zvcf landstalker_engine.tar.gz dds520.wasm dds520.js dds520.html
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: landstalker_engine_binary_emscripten
+          path: ${{github.workspace}}/landstalker_engine/build/landstalker_engine_emscripten.tar.gz
+
+      - name: Copy artifacts to root
+        working-directory: ${{github.workspace}}/
+        run: |
+          mkdir html
+          cp ${{github.workspace}}/landstalker_engine/build/dds520.{js,html,webm} html
+
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{github.workspace}}/html
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

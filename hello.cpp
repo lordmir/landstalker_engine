@@ -172,7 +172,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         {
             input += "\n";
         }
-        else if (CHARMAP.find(keycode) != std::string::npos)
+        else if (keycode <= 0xFF && CHARMAP.find((char)keycode) != std::string::npos)
         {
             input += (char)keycode;
         }
