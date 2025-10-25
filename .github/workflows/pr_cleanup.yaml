@@ -10,7 +10,7 @@ jobs:
       PR_PATH: PR-${{github.event.number}}
     permissions:
       contents: write
-      pull_requests: write
+      pull-requests: write
     steps:
       - name: make empty dir
         run: mkdir html
