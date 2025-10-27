@@ -87,7 +87,9 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "sdl_scancode.h": "c",
+        "set": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible"
 }

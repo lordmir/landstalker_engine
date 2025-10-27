@@ -6,6 +6,7 @@
 class IDrawable
 {
 public:
+    virtual ~IDrawable() = default;
     virtual void Draw(SDL_Renderer* renderer) = 0;
 };
 

@@ -38,6 +38,7 @@ public:
     bool IsValid(char c) const;
     unsigned int GetCharHeight() const { return texture->GetTileHeight(); }
     unsigned int GetCharWidth() const { return texture->GetTileWidth(); }
+    const std::string& GetCharset() const { return charset; }
 protected:
     virtual SDL_FRect GetSourceRect(int tile_index) const;
     virtual SDL_FRect GetDestRect(int tile_index, float x, float y, float x_scale, float y_scale) const;
