@@ -1,6 +1,8 @@
 #include "Font.h"
 #include <stdexcept>
 #include <numeric>
+#include <algorithm>
+#include <cmath>
 
 Font::Font(std::shared_ptr<Texture> tileset, std::string charset, std::unordered_map<char, CONTROL_CHAR> control_chars)
     : texture(tileset)
