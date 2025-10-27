@@ -96,8 +96,8 @@ SDL_FRect VarWidthFont::GetDestRect(int tile_index, float x, float y, float x_sc
         {
             static_cast<float>(x),
             static_cast<float>(y),
-            ceil(static_cast<float>(widths.at(tile_index)) * x_scale),
-            ceil(static_cast<float>(GetCharHeight()) * y_scale)
+            static_cast<float>(ceil(widths.at(tile_index) * x_scale)),
+            static_cast<float>(ceil(GetCharHeight() * y_scale))
         };
     }
     return SDL_FRect{};
