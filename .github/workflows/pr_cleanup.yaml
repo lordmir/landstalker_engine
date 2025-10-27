@@ -7,7 +7,7 @@ jobs:
   delete_preview:
     runs-on: ubuntu-20.04
     env:
-      PR_PATH: PR-${{github.event.number}}
+      PR_PATH: ./pr/${{github.event.number}}
     permissions:
       contents: write
       pull-requests: write
