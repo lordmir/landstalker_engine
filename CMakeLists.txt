@@ -22,7 +22,16 @@ add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
 
 # Create your game executable target as usual
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
-add_executable(${CMAKE_PROJECT_NAME} WIN32 hello.cpp)
+add_executable(${CMAKE_PROJECT_NAME} WIN32)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    hello.cpp
+    Graphics.cpp
+    Font.cpp
+    VarWidthFont.cpp
+    Utils.cpp
+    Texture.cpp
+    TextLabel.cpp
+)
 TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})
 
 # Copy assets from source to build

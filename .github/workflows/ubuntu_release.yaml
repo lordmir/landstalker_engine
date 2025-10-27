@@ -2,9 +2,10 @@ name: "build-release-ubuntu"
 on:
   push:
   release:
+    types: [published]
   pull_request:
-    branches:
-      - master
+    types: [opened, edited, synchronize, reopened]
+    branches: master
 jobs:
   build:
     name: Ubuntu release build

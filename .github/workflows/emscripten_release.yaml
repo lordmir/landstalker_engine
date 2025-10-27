@@ -2,7 +2,10 @@ name: "build-release-emscripten"
 on:
   push:
   release:
+    types: [published]
   pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: master
 jobs:
   build:
     name: Emscriptem/WASM release build
@@ -77,7 +80,9 @@ jobs:
 
       - name: Extract branch name
         shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/tags/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
       - name: Publish page (master)
@@ -89,11 +94,11 @@ jobs:
 
       - name: Publish page (branch)
         uses: peaceiris/actions-gh-pages@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.event_name == 'push' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{github.workspace}}/html
-          destination_dir: ./${{ steps.extract_branch.outputs.branch }}
+          destination_dir: ./branch/${{ steps.extract_branch.outputs.branch }}
 
       - name: Publish page (PR)
         uses: peaceiris/actions-gh-pages@v4
@@ -101,7 +106,15 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{github.workspace}}/html
-          destination_dir: PR-${{ github.event.number }}
+          destination_dir: ./pr/${{ github.event.number }}
+
+      - name: Publish page (release)
+        uses: peaceiris/actions-gh-pages@v4
+        if: ${{ github.event_name == 'release' }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{github.workspace}}/html
+          destination_dir: ${{ steps.extract_branch.outputs.tag }}
 
       - name: Update comment
         uses: hasura/comment-progress@v2.2.0
@@ -111,4 +124,4 @@ jobs:
           repository: ${{ github.repository }}
           number: ${{ github.event.number }}
           id: deploy-preview
-          message: "A preview of ${{ github.event.after }} is uploaded and can be seen here:\n\n ✨ https://lordmir.github.io/landstalker_engine/${{ github.event.number }} ✨\n\nChanges may take a few minutes to propagate."
+          message: "A preview of ${{ github.event.after }} is uploaded and can be seen here:\n\n ✨ https://lordmir.github.io/landstalker_engine/pr/${{ github.event.number }} ✨\n\nChanges may take a few minutes to propagate."
