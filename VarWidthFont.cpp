@@ -1,7 +1,9 @@
 #include "VarWidthFont.h"
+#include <cmath>
 
 static inline unsigned int trailing_zeroes(uint64_t n) {
-    unsigned bits = 0, x = n;
+    unsigned bits = 0;
+    uint64_t x = n;
 
     if (x) {
         /* mask the 32 low order bits, add 32 and shift them out if they are all 0 */
