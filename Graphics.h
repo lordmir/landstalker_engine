@@ -2,7 +2,10 @@
 #define _GRAPHICS_H_
 
 #include <SDL3/SDL.h>
+#include "IDrawable.h"
 #include <string>
+#include <memory>
+#include <vector>
 
 class Texture;
 class Font;
@@ -13,18 +16,13 @@ public:
     Graphics(int width, int height, const std::string& title);
     ~Graphics();
 
-    bool DrawTile(Texture& tex, int tile, int x, int y, int scale_x, int scale_y);
-    bool DrawTile(Texture& tex, int tile, int x, int y, int scale = 1);
-
-    int PutChar(Font& font, char chr, int x, int y, int scale = 1);
-    int PutString(Font& font, const std::string& str, int x, int y, int scale = 1);
-
-    void OnRender();
-
-    const SDL_Renderer* GetRenderer() const;
-    const SDL_Window* GetWindow() const;
-
+    void Render(const std::vector<std::shared_ptr<IDrawable>> drawables);
+    
+    SDL_Renderer* GetRenderer();
+    SDL_Window* GetWindow();
 private:
+    void Draw(const std::vector<std::shared_ptr<IDrawable>> drawables);
+    
     int width;
     int height;
     SDL_Window *window = nullptr;

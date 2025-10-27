@@ -31,7 +31,7 @@ Graphics::~Graphics()
     SDL_Quit();
 }
 
-void Graphics::OnRender()
+void Graphics::Render(const std::vector<std::shared_ptr<IDrawable>> drawables)
 {
     if (!renderer) return;
 
@@ -39,7 +39,25 @@ void Graphics::OnRender()
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // TODO: add drawing code here
+    Draw(drawables);
 
     SDL_RenderPresent(renderer);
+}
+
+SDL_Renderer* Graphics::GetRenderer()
+{
+    return renderer;
+}
+
+SDL_Window* Graphics::GetWindow()
+{
+    return window;
+}
+
+void Graphics::Draw(const std::vector<std::shared_ptr<IDrawable>> drawables)
+{
+    for(const auto& drawable : drawables)
+    {
+        drawable->Draw(renderer);
+    }
 }

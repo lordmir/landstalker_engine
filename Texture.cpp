@@ -21,26 +21,26 @@ static const std::vector<SDL_Color> DEFAULT_PALETTE = {
     {0xFF, 0xFF, 0xFF, 0x00}
 };
 
-Texture::Texture(SDL_Renderer* renderer, const std::filesystem::path& path, unsigned int tile_w, unsigned int tile_h, unsigned int bitdepth)
-	: tile_x(tile_x)
-	, tile_y(tile_y)
+Texture::Texture(std::shared_ptr<Graphics> graphics, const std::filesystem::path& path, unsigned int tile_w, unsigned int tile_h, unsigned int bitdepth)
+	: tile_width(tile_w)
+	, tile_height(tile_h)
 	, bitdepth(bitdepth)
     , pixels_per_byte(8 / bitdepth)
     , bytes_per_tile(tile_w * tile_h / pixels_per_byte)
     , stride(tile_w / pixels_per_byte)
     , total_colours(1 << bitdepth)
 	, tile_count(0)
-    , renderer(renderer)
+    , graphics(graphics)
 	, tex(nullptr)
 	, surf(nullptr)
 {
-    auto bytes = read_bytes(path);
+    bytes = std::make_unique<std::vector<uint8_t>>(read_bytes(path));
 
-    total_h = bytes.size() / stride;
+    total_h = bytes->size() / stride;
     tile_count = total_h / tile_h;
 
     surf = SDL_CreateSurfaceFrom(tile_w, total_h, PIXEL_FORMATS[bitdepth],
-        bytes.data(), stride);
+        bytes->data(), stride);
     
     SetColours(DEFAULT_PALETTE);
 }
@@ -75,11 +75,16 @@ void Texture::SetColours(const std::vector<SDL_Color>& colours, const std::vecto
 		SDL_DestroyTexture(tex);
 		tex = nullptr;
 	}
-    tex = SDL_CreateTextureFromSurface(renderer, surf);
+    tex = SDL_CreateTextureFromSurface(graphics->GetRenderer(), surf);
     SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_PIXELART);
 }
 
 SDL_Texture* Texture::GetSdlTexture()
 {
     return tex;
+}
+
+SDL_Surface* Texture::GetSdlSurface()
+{
+    return surf;
 }
