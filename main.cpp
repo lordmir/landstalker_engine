@@ -9,6 +9,7 @@
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
+#include <format>
 
 #include "Graphics.h"
 #include "VarWidthFont.h"
@@ -23,6 +24,7 @@ const std::string CHARSET = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn
 std::shared_ptr<Graphics> graphics;
 std::vector<std::shared_ptr<IDrawable>> drawables;
 std::shared_ptr<InputBox> inputbox;
+std::shared_ptr<TextBox> fps;
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -45,8 +47,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     menu_font->SetColours(ui_pal->GetSdlColours());
     main_font->SetColours(ui_pal->GetSdlColours());
 
-    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, menu_font, "Type something: ", 16, 40, 1, 1, true);
-    drawables.push_back(std::make_shared<TextBox>(ui_tiles, ui_pal, main_font, "Hello from Diamond-Shaped Dimension System 520!", 0, 0, 1, 1, true));
+    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, main_font, "Type something: ", 16, 40, 1, 1, true);
+    fps = std::make_shared<TextBox>(ui_tiles, ui_pal, menu_font, "  0 FPS", 1100, 0, 1, 1, true);
+    drawables.push_back(std::make_shared<TextBox>(ui_tiles, ui_pal, main_font, "Hello from Diamond-Shaped Dimension System 520!", 0, 0, 50, 1, true));
+    drawables.push_back(fps);
     drawables.push_back(inputbox);
     Keyboard::GetInstance().RegisterKeyInputHandler(inputbox);
     
@@ -96,6 +100,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
         factor = 0.0f;
         direction = true;
     }
+
+    fps->SetLabelText(std::format("{0:4d} FPS", static_cast<unsigned int>(1.0 / delta)));
+
     SDL_Color blended = {
         static_cast<Uint8>(std::clamp<int>(original.r + factor * (target.r - original.r), 0, 255)),
         static_cast<Uint8>(std::clamp<int>(original.g + factor * (target.g - original.g), 0, 255)),
