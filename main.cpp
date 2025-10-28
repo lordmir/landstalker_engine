@@ -8,6 +8,7 @@
 #include <iterator>
 #include <iostream>
 #include <filesystem>
+#include <algorithm>
 
 #include "Graphics.h"
 #include "VarWidthFont.h"
