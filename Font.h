@@ -25,6 +25,8 @@ public:
 
     Font(std::shared_ptr<Texture> tileset, std::string charset, std::unordered_map<char, CONTROL_CHAR> control_chars);
 
+    void SetColours(const std::vector<SDL_Color>& colours, const std::vector<int>& indices = {});
+
     virtual std::pair<unsigned int, unsigned int> GetExtent(char c, float x_scale, float y_scale) const;
     std::pair<unsigned int, unsigned int> GetExtent(char c, float scale = 1.0f) const;
     virtual std::pair<unsigned int, unsigned int> GetExtent(std::string str, float x_scale, float y_scale) const;

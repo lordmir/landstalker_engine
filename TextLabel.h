@@ -13,6 +13,9 @@ public:
     TextLabel(std::shared_ptr<Font> font, unsigned int x, unsigned int y, const std::string& text, float scale = 1.0f);
     virtual ~TextLabel() = default;
     virtual void SetLabelText(const std::string& text);
+    const std::string& GetLabelText() const { return text; }
+    std::pair<unsigned int, unsigned int> GetExtent() const;
+
     virtual void Draw(SDL_Renderer* renderer) override;
 protected:
     std::shared_ptr<Font> font;

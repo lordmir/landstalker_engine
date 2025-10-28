@@ -10,7 +10,15 @@
 class Texture
 {
 public:
+    struct Tile
+    {
+        int index;
+        bool vflip;
+        bool hflip;
+    };
+
     Texture(std::shared_ptr<Graphics> graphics, const std::filesystem::path& path, unsigned int tile_w, unsigned int tile_h, unsigned int bitdepth);
+    Texture(const Texture& rhs);
     virtual ~Texture();
 
     void SetColours(const std::vector<SDL_Color>& colours, const std::vector<int>& indices = {});
@@ -22,8 +30,12 @@ public:
     unsigned int GetTileCount() const { return tile_count; }
     unsigned int GetTileBitdepth() const { return bitdepth; }
     unsigned int GetRowStride() const { return stride; }
-
-protected:
+    
+    SDL_FRect GetSourceRect(int tile_index) const;
+    SDL_FRect GetDestRect(int tile_index, float x, float y, float x_scale = 1.0f, float y_scale = 1.0f) const;
+    void DrawTile(SDL_Renderer* renderer, const Tile& tile, float x, float y, float x_scale = 1.0f, float y_scale = 1.0f);
+    
+private:
     const unsigned int tile_width;
     const unsigned int tile_height;
     const unsigned int bitdepth;

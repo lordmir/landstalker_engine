@@ -24,14 +24,18 @@ add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
 add_executable(${CMAKE_PROJECT_NAME} WIN32)
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    Utils.cpp
     Graphics.cpp
     Keyboard.cpp
+    Texture.cpp
+    Palette.cpp
     Font.cpp
     VarWidthFont.cpp
-    Utils.cpp
-    Texture.cpp
     TextLabel.cpp
     TextInput.cpp
+    UIBox.cpp
+    TextBox.cpp
+    InputBox.cpp
     main.cpp
 )
 TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})

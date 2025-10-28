@@ -41,7 +41,28 @@ Texture::Texture(std::shared_ptr<Graphics> graphics, const std::filesystem::path
 
     surf = SDL_CreateSurfaceFrom(tile_w, total_h, PIXEL_FORMATS[bitdepth],
         bytes->data(), stride);
-    
+    SDL_SetSurfaceBlendMode(surf, SDL_BLENDMODE_BLEND);
+    SetColours(DEFAULT_PALETTE);
+}
+
+Texture::Texture(const Texture &rhs)
+    : tile_width(rhs.tile_width)
+    , tile_height(rhs.tile_height)
+    , bitdepth(rhs.bitdepth)
+    , pixels_per_byte(8 / bitdepth)
+    , bytes_per_tile(tile_width * tile_height / pixels_per_byte)
+    , stride(tile_width / pixels_per_byte)
+    , total_colours(1 << bitdepth)
+	, tile_count(rhs.tile_count)
+    , total_h(rhs.total_h)
+    , graphics(rhs.graphics)
+	, tex(nullptr)
+	, surf(nullptr)
+{
+    bytes = std::make_unique<std::vector<uint8_t>>(*(rhs.bytes));
+    surf = SDL_CreateSurfaceFrom(tile_width, total_h, PIXEL_FORMATS[bitdepth],
+        bytes->data(), stride);
+    SDL_SetSurfaceBlendMode(surf, SDL_BLENDMODE_BLEND);
     SetColours(DEFAULT_PALETTE);
 }
 
@@ -68,9 +89,12 @@ void Texture::SetColours(const std::vector<SDL_Color>& colours, const std::vecto
         {
             colour_index = indices.at(i);
         }
-        pal->colors[i] = colours.at(colour_index);
+        SDL_SetPaletteColors(pal, &colours.at(colour_index), i, 1);
     }
-    SDL_SetSurfacePalette(surf, pal);
+    if(!SDL_SetSurfacePalette(surf, pal))
+    {
+        throw std::runtime_error(std::string("Unable to set palette: ") + SDL_GetError());
+    }
 	if (tex) {
 		SDL_DestroyTexture(tex);
 		tex = nullptr;
@@ -87,4 +111,41 @@ SDL_Texture* Texture::GetSdlTexture()
 SDL_Surface* Texture::GetSdlSurface()
 {
     return surf;
+}
+
+SDL_FRect Texture::GetSourceRect(int tile_index) const
+{
+    // Implementation for getting the source rectangle of a character
+    if(tile_index >= 0 && static_cast<unsigned int>(tile_index) < tile_count)
+    {
+        return SDL_FRect{0.0f, static_cast<float>(tile_height * tile_index),
+                         static_cast<float>(tile_width), static_cast<float>(tile_height)};
+    }
+    return SDL_FRect{};
+}
+
+SDL_FRect Texture::GetDestRect(int tile_index, float x, float y, float x_scale, float y_scale) const
+{
+    // Implementation for getting the destination rectangle of a character with scaling
+    if(tile_index >= 0 && static_cast<unsigned int>(tile_index) < tile_count)
+    {
+        return SDL_FRect{x, y, static_cast<float>(tile_width) * x_scale,
+            static_cast<float>(tile_height) * y_scale};
+    }
+    return SDL_FRect{};
+}
+
+void Texture::DrawTile(SDL_Renderer *renderer, const Tile &tile, float x, float y, float x_scale, float y_scale)
+{
+    auto src_rect = GetSourceRect(tile.index);
+    auto dest_rect = GetDestRect(tile.index, x, y, x_scale, y_scale);
+    if (!tile.hflip && !tile.vflip)
+    {
+        SDL_RenderTexture(renderer, tex, &src_rect, &dest_rect);
+    }
+    else
+    {
+        SDL_FlipMode flip_mode = static_cast<SDL_FlipMode>((tile.hflip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (tile.vflip ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE));
+        SDL_RenderTextureRotated(renderer, tex, &src_rect, &dest_rect, 0.0, nullptr, flip_mode);
+    }
 }

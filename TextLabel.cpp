@@ -13,6 +13,11 @@ void TextLabel::SetLabelText(const std::string& text_in)
     text = text_in;
 }
 
+std::pair<unsigned int, unsigned int> TextLabel::GetExtent() const
+{
+    return font->GetExtent(text, scale_x, scale_y);
+}
+
 void TextLabel::Draw(SDL_Renderer* renderer)
 {
     font->PrintString(renderer, x, y, text, scale_x, scale_y);

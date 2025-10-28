@@ -11,6 +11,12 @@ Font::Font(std::shared_ptr<Texture> tileset, std::string charset, std::unordered
 {
 }
 
+
+void Font::SetColours(const std::vector<SDL_Color>& colours, const std::vector<int>& indices)
+{
+    texture->SetColours(colours, indices);
+}
+
 std::pair<unsigned int, unsigned int> Font::GetExtent(char c, float x_scale, float y_scale) const
 {
     // Implementation for getting the extent of a character with scaling
@@ -31,16 +37,22 @@ std::pair<unsigned int, unsigned int> Font::GetExtent(char c, float scale) const
 std::pair<unsigned int, unsigned int> Font::GetExtent(std::string str, float x_scale, float y_scale) const
 {
     // Implementation for getting the extent of a string with scaling
+    if(str.empty())
+    {
+        return {0, 0};
+    }
+
     std::vector<std::string> lines;
     unsigned int line_begin = 0;
     for(unsigned int i = 0; i < str.size(); ++i)
     {
         if(GetControlChar(str[i]) == CONTROL_CHAR::NEWLINE)
         {
-            lines.push_back(str.substr(line_begin, i));
-            line_begin = i;
+            lines.push_back(str.substr(line_begin, i - line_begin));
+            line_begin = i + 1;
         }
     }
+    lines.push_back(str.substr(line_begin));
 
     std::vector<std::pair<unsigned int, unsigned int>> line_extents;
     for(const auto& line : lines)
@@ -61,10 +73,10 @@ std::pair<unsigned int, unsigned int> Font::GetExtent(std::string str, float x_s
             [](auto lhs, auto rhs) {
                 return lhs.first < rhs.first;
             })->first,
-        std::max_element(line_extents.begin(), line_extents.end(),
-            [](auto lhs, auto rhs) {
-                return lhs.second < rhs.second;
-            })->second
+        std::accumulate(line_extents.begin(), line_extents.end(), 0,
+            [](int sum, auto elem) {
+                return sum + elem.second;
+            })
     };
 }
 
@@ -126,29 +138,12 @@ std::pair<unsigned int, unsigned int> Font::PrintString(SDL_Renderer* renderer, 
 
 SDL_FRect Font::GetSourceRect(int tile_index) const
 {
-    // Implementation for getting the source rectangle of a character
-    if(tile_index != -1)
-    {
-        unsigned int tile_w = texture->GetTileWidth();
-        unsigned int tile_h = texture->GetTileHeight();
-
-        return SDL_FRect{0.0f, static_cast<float>(tile_h * tile_index),
-                         static_cast<float>(tile_w), static_cast<float>(tile_h)};
-    }
-    return SDL_FRect{};
+    return texture->GetSourceRect(tile_index);
 }
+
 SDL_FRect Font::GetDestRect(int tile_index, float x, float y, float x_scale, float y_scale) const
 {
-    // Implementation for getting the destination rectangle of a character with scaling
-    if(tile_index != -1)
-    {
-        unsigned int tile_w = texture->GetTileWidth();
-        unsigned int tile_h = texture->GetTileHeight();
-
-        return SDL_FRect{x, y, static_cast<float>(tile_w) * x_scale,
-            static_cast<float>(tile_h) * y_scale};
-    }
-    return SDL_FRect{};
+    return texture->GetDestRect(tile_index, x, y, x_scale, y_scale);
 }
 
 int Font::CharToTile(char c) const
