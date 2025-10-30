@@ -21,13 +21,13 @@ public:
     void SetMaxHealth(unsigned int health) { max_health = health; }
     unsigned int GetMaxHealth() const { return max_health; }
 
-    static const unsigned int GOLD_CAP = 99999;
-    static const unsigned int HEALTH_CAP = 200;
-    static const unsigned int HEARTS_CAP = 200;
-    static const unsigned int EKEEKE_CAP = 99;
-    static const unsigned int HP_PER_SMALL_HEART = 1;
-    static const unsigned int HP_PER_MEDIUM_HEART = 10;
-    static const unsigned int HP_PER_LARGE_HEART = 50;
+    static constexpr unsigned int GOLD_CAP = 99999;
+    static constexpr unsigned int HEALTH_CAP = 200;
+    static constexpr unsigned int HEARTS_CAP = 200;
+    static constexpr unsigned int EKEEKE_CAP = 99;
+    static constexpr unsigned int HP_PER_SMALL_HEART = 1;
+    static constexpr unsigned int HP_PER_MEDIUM_HEART = 10;
+    static constexpr unsigned int HP_PER_LARGE_HEART = 50;
 protected:
     virtual void PrepareTilemap() override;
 private:
@@ -48,13 +48,13 @@ private:
     unsigned int RenderEkeEke(unsigned int col);
     unsigned int RenderGold(unsigned int col);
 
-    static const unsigned int GOLD_RIGHT_PADDING = 0;
-    static const unsigned int EKEEKE_RIGHT_PADDING = 1;
-    static const unsigned int HEALTH_DIGITS_RIGHT_PADDING = 1;
-    static const unsigned int HEARTS_RIGHT_PADDING = 0;
-    static const unsigned int SWORD_CHARGE_RIGHT_PADDING = 1;
-    static const unsigned int SWORD_CHARGE_LEFT_PADDING = 1;
-    static const unsigned int MIN_SWORD_CHARGE_LENGTH = 4;
+    static constexpr unsigned int GOLD_RIGHT_PADDING = 0;
+    static constexpr unsigned int EKEEKE_RIGHT_PADDING = 1;
+    static constexpr unsigned int HEALTH_DIGITS_RIGHT_PADDING = 1;
+    static constexpr unsigned int HEARTS_RIGHT_PADDING = 0;
+    static constexpr unsigned int SWORD_CHARGE_RIGHT_PADDING = 1;
+    static constexpr unsigned int SWORD_CHARGE_LEFT_PADDING = 1;
+    static constexpr unsigned int MIN_SWORD_CHARGE_LENGTH = 4;
 
     unsigned int current_ekeeke = 0;
     double magic_sword_charge = 0.0;
