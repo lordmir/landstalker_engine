@@ -36,10 +36,14 @@ public:
     std::pair<unsigned int, unsigned int> PrintCharacter(SDL_Renderer* renderer, unsigned int x, unsigned int y, char c, float scale = 1.0f) const;
     std::pair<unsigned int, unsigned int> PrintString(SDL_Renderer* renderer, unsigned int x, unsigned int y, std::string str, float x_scale, float y_scale) const;
     std::pair<unsigned int, unsigned int> PrintString(SDL_Renderer* renderer, unsigned int x, unsigned int y, std::string str, float scale = 1.0f) const;
+
+    std::vector<std::string> Split(const std::string& input, const std::string& delimiters = " -.\n", bool strip_spaces = false) const;
+    std::string Wrap(const std::string& input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale, const std::string& breaking_chars = " -.\n") const;
+    std::string Constrain(const std::string& input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale) const;
     
     bool IsValid(char c) const;
-    unsigned int GetCharHeight() const { return texture->GetTileHeight(); }
-    unsigned int GetCharWidth() const { return texture->GetTileWidth(); }
+    virtual unsigned int GetCharHeight() const { return texture->GetTileHeight(); }
+    virtual unsigned int GetCharWidth() const { return texture->GetTileWidth(); }
     const std::string& GetCharset() const { return charset; }
 protected:
     virtual SDL_FRect GetSourceRect(int tile_index) const;

@@ -51,14 +51,21 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     menu_font->SetColours(ui_pal->GetSdlColours());
     main_font->SetColours(ui_pal->GetSdlColours());
 
-    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, main_font, "Type something: ", 0, graphics->GetHeight() - 32 * 5 - 16, graphics->GetWidth() - 32, 32, true);
-    fps = std::make_shared<FpsBox>(ui_tiles, ui_pal, menu_font, 1120, 0);
-    hud = std::make_shared<HudDemo>(ui_tiles, ui_pal, 0, 0, 1088, 8);
+    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, main_font, "Type something: ");
+    inputbox->SetExternalWidthPixels(graphics->GetWidth());
+    inputbox->SetInternalHeightPixels(inputbox->GetCharHeight() * 5);
+    inputbox->SetY(graphics->GetHeight() - inputbox->GetExternalHeightPixels() - inputbox->GetCharHeight());
+    inputbox->SetMaxSize(inputbox->GetInternalWidthPixels(), inputbox->GetInternalHeightPixels());
+    inputbox->SetWrapEnabled(true);
+    
+    fps = std::make_shared<FpsBox>(ui_tiles, ui_pal, menu_font, 0, 0);
+    hud = std::make_shared<HudDemo>(ui_tiles, ui_pal, 0, 0, graphics->GetWidth() - fps->GetExternalWidthPixels() - 32, 8);
+    fps->SetX(hud->GetExternalWidthPixels());
     SDL_Rect main_viewport = {
         0,
         static_cast<int>(hud->GetExternalHeightPixels()),
         static_cast<int>(graphics->GetWidth()),
-        static_cast<int>(graphics->GetHeight() - hud->GetExternalHeightPixels()) - 32 * 5
+        static_cast<int>(graphics->GetHeight() - hud->GetExternalHeightPixels() - inputbox->GetExternalHeightPixels())
     };
     auto hello = std::make_shared<TextBox>(ui_tiles, ui_pal, main_font, "Hello from Diamond-Shaped Dimension System 520!", main_viewport.x, main_viewport.y, 0, 0, true);
     hello->SetX((main_viewport.w - hello->GetExternalWidthPixels()) / 2);
