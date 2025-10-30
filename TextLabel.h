@@ -1,12 +1,12 @@
 #ifndef _TEXTLABEL_H_
 #define _TEXTLABEL_H_
 
-#include "IDrawable.h"
+#include "Drawable.h"
 #include "Font.h"
 #include <string>
 #include <memory>
 
-class TextLabel : public IDrawable
+class TextLabel : public Drawable
 {
 public:
     TextLabel(std::shared_ptr<Font> font, unsigned int x, unsigned int y, const std::string& text, float scale_x, float scale_y);
@@ -15,6 +15,11 @@ public:
     virtual void SetLabelText(const std::string& text);
     const std::string& GetLabelText() const { return text; }
     std::pair<unsigned int, unsigned int> GetExtent() const;
+
+    unsigned int GetX() const { return x; }
+    unsigned int GetY() const { return y; }
+    void SetX(unsigned int x) { this->x = x; }
+    void SetY(unsigned int y) { this->y = y; }
 
     virtual void Draw(SDL_Renderer* renderer) override;
 protected:

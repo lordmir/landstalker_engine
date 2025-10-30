@@ -10,10 +10,10 @@ public:
     TextBox(std::shared_ptr<Texture> ui_tiles, std::shared_ptr<Palette> palette,
         std::shared_ptr<Font> font, const std::string& label_text,
         unsigned int x = 0, unsigned int y = 0,
-        unsigned int width = 40, unsigned int height = 6, bool auto_expand = false,
+        unsigned int width = 320, unsigned int height = 32, bool auto_expand = false,
         float x_scale = 2.0f, float y_scale = 2.0f);
 
-    void SetLabelText(const std::string& text) { text_label->SetLabelText(text); }
+    void SetLabelText(const std::string& text);
     const std::string& GetLabelText() const { return text_label->GetLabelText(); }
 
     void RecalculateSize();

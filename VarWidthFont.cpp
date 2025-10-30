@@ -24,9 +24,9 @@ static inline unsigned int trailing_zeroes(uint64_t n) {
 
 VarWidthFont::VarWidthFont(std::shared_ptr<Texture> tileset, std::string charset,
     std::unordered_map<char, CONTROL_CHAR> control_chars,
-    unsigned int space_width, unsigned int char_spacing)
+    unsigned int space_width, unsigned int char_spacing, unsigned int line_spacing)
     : Font(tileset, charset, control_chars)
-    , char_spacing(char_spacing)
+    , char_spacing(char_spacing), line_spacing(line_spacing)
 {
     widths.assign(tileset->GetTileCount(), space_width);
 
@@ -67,7 +67,7 @@ std::pair<unsigned int, unsigned int> VarWidthFont::GetExtent(char c, float x_sc
     if (tile_index != -1)
     {
         return {static_cast<unsigned int>(ceil((widths.at(tile_index) + char_spacing) * x_scale)),
-            Font::GetExtent(c, x_scale, y_scale).second};
+            static_cast<unsigned int>(ceil(Font::GetExtent(c, x_scale, y_scale).second + line_spacing * y_scale))};
     }
     return {0, 0};
 }
@@ -95,7 +95,7 @@ SDL_FRect VarWidthFont::GetDestRect(int tile_index, float x, float y, float x_sc
         return SDL_FRect
         {
             static_cast<float>(x),
-            static_cast<float>(y),
+            static_cast<float>(y + ceil(line_spacing * y_scale)),
             static_cast<float>(ceil(widths.at(tile_index) * x_scale)),
             static_cast<float>(ceil(GetCharHeight() * y_scale))
         };

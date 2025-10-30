@@ -4,10 +4,10 @@
 #include <memory>
 #include "Texture.h"
 #include "Palette.h"
-#include "IDrawable.h"
+#include "Drawable.h"
 
 
-class UIBox : public IDrawable
+class UIBox : public Drawable
 {
 public:
     enum class Tiles
@@ -84,34 +84,56 @@ public:
         SWORD_CHARGE_BODY_5,
         SWORD_CHARGE_BODY_6,
         SWORD_CHARGE_BODY_7,
+        SWORD_CHARGE_BODY_8,
+        SWORD_CHARGE_BODY_9,
         SWORD_CHARGE_TIP_2,
         TRANSPARENT
     };
 
-    UIBox(std::shared_ptr<Texture> ui_tiles, std::shared_ptr<Palette> palette, unsigned int x = 0, unsigned int y = 0, unsigned int width = 3, unsigned int height = 3, float x_scale = 2.0f, float y_scale = 2.0f);
-    unsigned int GetX() const { return x; }
-    unsigned int GetY() const { return y; }
-    unsigned int GetWidth() const { return width; }
-    unsigned int GetHeight() const { return height; }
-    float GetXScale() const { return x_scale; }
-    float GetYScale() const { return y_scale; }
-    SDL_Color GetBackgroundColour() const { return palette->GetSdlColour(box_background_idx); }
+    UIBox(std::shared_ptr<Texture> ui_tiles, std::shared_ptr<Palette> palette, unsigned int x = 0, unsigned int y = 0, unsigned int width = 24, unsigned int height = 24, float x_scale = 2.0f, float y_scale = 2.0f);
+    unsigned int GetX() const;
+    unsigned int GetY() const;
+    unsigned int GetInternalX() const;
+    unsigned int GetInternalY() const;
+    unsigned int GetInternalWidthPixels() const;
+    unsigned int GetInternalHeightPixels() const;
+    unsigned int GetInternalWidthTiles() const;
+    unsigned int GetInternalHeightTiles() const;
+    unsigned int GetExternalWidthPixels() const;
+    unsigned int GetExternalHeightPixels() const;
+    unsigned int GetExternalWidthTiles() const;
+    unsigned int GetExternalHeightTiles() const;
+    float GetXScale() const;
+    float GetYScale() const;
+    SDL_Color GetBackgroundColour() const;
 
-    void SetX(unsigned int nx) { x = nx; }
-    void SetY(unsigned int ny) { y = ny; }
-    void SetWidth(unsigned int w) { width = w; }
-    void SetHeight(unsigned int h) { height = h; }
-    void SetXScale(float xs) { x_scale = xs; }
-    void SetYScale(float ys) { y_scale = ys; }
+    void SetX(unsigned int nx);
+    void SetY(unsigned int ny);
+    void SetInternalWidthPixels(unsigned int w);
+    void SetInternalHeightPixels(unsigned int h);
+    void SetInternalWidthTiles(unsigned int w);
+    void SetInternalHeightTiles(unsigned int h);
+    void SetXScale(float xs);
+    void SetYScale(float ys);
+    void SetScale(float xs, float ys);
+    void SetScale(float s);
     void SetBackgroundColour(const SDL_Color& colour);
+    void SetTile(const Texture::Tile& tile, const unsigned int x, const unsigned int y);
+    Texture::Tile GetTile(const unsigned int x, const unsigned int y) const;
+    Texture::Tile& Tile(const unsigned int x, const unsigned int y);
 
     virtual void Draw(SDL_Renderer* renderer) override;
-
+    
+    unsigned int tile_width;
+    unsigned int tile_height;
 protected:
+    virtual void PrepareTilemap();
     std::unique_ptr<Texture> ui_tiles;
     std::unique_ptr<Palette> palette;
+    std::vector<Texture::Tile> tiles;
 private:
     const unsigned int box_background_idx = 10;
+    const unsigned int border_thickness = 1;
     unsigned int x;
     unsigned int y;
     unsigned int width;

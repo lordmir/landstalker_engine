@@ -3,7 +3,7 @@
 #include <SDL3/SDL.h>
 #include <stdexcept>
 
-Graphics::Graphics(int width, int height, const std::string& title)
+Graphics::Graphics(unsigned int width, unsigned int height, const std::string& title)
     : width(width), height(height), window(nullptr), renderer(nullptr)
 {
     // Create the window

@@ -13,18 +13,21 @@ class Font;
 class Graphics
 {
 public:
-    Graphics(int width, int height, const std::string& title);
+    Graphics(unsigned int width, unsigned int height, const std::string& title);
     ~Graphics();
 
     void Render(const std::vector<std::shared_ptr<IDrawable>> drawables);
     
     SDL_Renderer* GetRenderer();
     SDL_Window* GetWindow();
+
+    unsigned int GetWidth() const { return width; }
+    unsigned int GetHeight() const { return height; }
 private:
     void Draw(const std::vector<std::shared_ptr<IDrawable>> drawables);
     
-    int width;
-    int height;
+    unsigned int width;
+    unsigned int height;
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
 };
