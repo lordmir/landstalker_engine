@@ -10,24 +10,30 @@ TextBox::TextBox(std::shared_ptr<Texture> ui_tiles, std::shared_ptr<Palette> pal
     
 {
     text_label = std::make_unique<TextLabel>(
-        font, static_cast<unsigned int>(x + ui_tiles->GetTileWidth() * x_scale),
-        static_cast<unsigned int>(y + ui_tiles->GetTileHeight() * y_scale),
+        font, GetInternalX(), GetInternalY(),
         label_text, x_scale, y_scale);
+    RecalculateSize();
+}
+
+void TextBox::SetLabelText(const std::string& text)
+{
+    text_label->SetLabelText(text);
+    RecalculateSize();
 }
 
 void TextBox::RecalculateSize()
 {
+    text_label->SetX(GetInternalX());
+    text_label->SetY(GetInternalY());
     if(auto_expand)
     {
         auto [text_w, text_h] = text_label->GetExtent();
-        unsigned int tile_width = static_cast<unsigned int>(ui_tiles->GetTileWidth() * GetXScale());
-        unsigned int tile_height = static_cast<unsigned int>(ui_tiles->GetTileHeight() * GetYScale());
-        unsigned int new_width = std::max(init_width, (text_w + tile_width - 1) / tile_width);
-        unsigned int new_height = std::max(init_height, (text_h + tile_height - 1) / tile_height);
-        if(new_width != GetWidth() || new_height != GetHeight())
+        text_w = std::max(init_width, text_w);
+        text_h = std::max(init_height, text_h);
+        if(text_w != GetInternalWidthTiles() || text_h != GetInternalHeightTiles())
         {
-            SetWidth(new_width);
-            SetHeight(new_height);
+            SetInternalWidthPixels(text_w);
+            SetInternalHeightPixels(text_h);
         }
     }
 }

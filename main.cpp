@@ -12,6 +12,7 @@
 #include <format>
 
 #include "Graphics.h"
+#include "Timer.h"
 #include "VarWidthFont.h"
 #include "TextLabel.h"
 #include "TextInput.h"
@@ -19,12 +20,15 @@
 #include "Palette.h"
 #include "TextBox.h"
 #include "InputBox.h"
+#include "FpsBox.h"
+#include "HudDemo.h"
 
 const std::string CHARSET = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz*.,?!/<>:-'\"%#&()=[]{}@";
 std::shared_ptr<Graphics> graphics;
 std::vector<std::shared_ptr<IDrawable>> drawables;
 std::shared_ptr<InputBox> inputbox;
 std::shared_ptr<TextBox> fps;
+std::shared_ptr<Hud> hud;
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
@@ -36,7 +40,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
     auto main_font = std::make_shared<VarWidthFont>(
         std::make_shared<Texture>(graphics, std::filesystem::path(ASSETS_PATH "/graphics/fonts/mainfont.1bpp"), 16, 15, 1),
-        CHARSET, std::unordered_map<char, Font::CONTROL_CHAR>{{'\n', Font::CONTROL_CHAR::NEWLINE}}, 8, 2);
+        CHARSET, std::unordered_map<char, Font::CONTROL_CHAR>{{'\n', Font::CONTROL_CHAR::NEWLINE}}, 8, 2, 1);
     auto menu_font = std::make_shared<Font>(
         std::make_shared<Texture>(graphics, std::filesystem::path(ASSETS_PATH "/graphics/fonts/menufont.1bpp"), 8, 8, 1),
         CHARSET, std::unordered_map<char, Font::CONTROL_CHAR>{{'\n', Font::CONTROL_CHAR::NEWLINE}});
@@ -47,13 +51,23 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     menu_font->SetColours(ui_pal->GetSdlColours());
     main_font->SetColours(ui_pal->GetSdlColours());
 
-    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, main_font, "Type something: ", 16, 40, 1, 1, true);
-    fps = std::make_shared<TextBox>(ui_tiles, ui_pal, menu_font, "  0 FPS", 1100, 0, 1, 1, true);
-    drawables.push_back(std::make_shared<TextBox>(ui_tiles, ui_pal, main_font, "Hello from Diamond-Shaped Dimension System 520!", 0, 0, 50, 1, true));
-    drawables.push_back(fps);
+    inputbox = std::make_shared<InputBox>(ui_tiles, ui_pal, main_font, "Type something: ", 0, graphics->GetHeight() - 32 * 5 - 16, graphics->GetWidth() - 32, 32, true);
+    fps = std::make_shared<FpsBox>(ui_tiles, ui_pal, menu_font, 1120, 0);
+    hud = std::make_shared<HudDemo>(ui_tiles, ui_pal, 0, 0, 1088, 8);
+    SDL_Rect main_viewport = {
+        0,
+        static_cast<int>(hud->GetExternalHeightPixels()),
+        static_cast<int>(graphics->GetWidth()),
+        static_cast<int>(graphics->GetHeight() - hud->GetExternalHeightPixels()) - 32 * 5
+    };
+    auto hello = std::make_shared<TextBox>(ui_tiles, ui_pal, main_font, "Hello from Diamond-Shaped Dimension System 520!", main_viewport.x, main_viewport.y, 0, 0, true);
+    hello->SetX((main_viewport.w - hello->GetExternalWidthPixels()) / 2);
+    hello->SetY((main_viewport.h - hello->GetExternalHeightPixels()) / 2);
+    drawables.push_back(hello);
     drawables.push_back(inputbox);
+    drawables.push_back(hud);
+    drawables.push_back(fps);
     Keyboard::GetInstance().RegisterKeyInputHandler(inputbox);
-    
     return SDL_APP_CONTINUE;
 }
 
@@ -81,36 +95,12 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
     static SDL_Color original = inputbox->GetBackgroundColour();
     static SDL_Color target = {0xFF, 0x00, 0x00, 0xFF};
-    static float factor = 0.0f;
-    static bool direction = false;
-    static uint64_t last_time = 0ULL;
-    uint64_t current_time = SDL_GetPerformanceCounter();
-    double delta = (current_time - last_time) / static_cast<double>(SDL_GetPerformanceFrequency());
-    last_time = current_time;
-    const float step = delta == 0ULL ? 0.0f : delta / 5.0;
-    
-    factor += step * (direction ? 1.0f : -1.0f);
-    if(factor >= 1.0f)
+    const double delta = Timer::GetDelta();
+    std::for_each(drawables.begin(), drawables.end(), [delta](auto& d){ d->OnUpdate(delta); });
+    Timer::ProcessTicks([](unsigned int tick_count)
     {
-        factor = 1.0f;
-        direction = false;
-    }
-    else if(factor <= 0.0f)
-    {
-        factor = 0.0f;
-        direction = true;
-    }
-
-    fps->SetLabelText(std::format("{0:4d} FPS", static_cast<unsigned int>(1.0 / delta)));
-
-    SDL_Color blended = {
-        static_cast<Uint8>(std::clamp<int>(original.r + factor * (target.r - original.r), 0, 255)),
-        static_cast<Uint8>(std::clamp<int>(original.g + factor * (target.g - original.g), 0, 255)),
-        static_cast<Uint8>(std::clamp<int>(original.b + factor * (target.b - original.b), 0, 255)),
-        0xFF
-    };
-
-    inputbox->SetBackgroundColour(blended);
+        std::for_each(drawables.begin(), drawables.end(), [tick_count](auto& d){ d->OnTick(tick_count); });
+    });
     graphics->Render(drawables);
 
     return SDL_APP_CONTINUE;

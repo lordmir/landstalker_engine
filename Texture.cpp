@@ -101,6 +101,7 @@ void Texture::SetColours(const std::vector<SDL_Color>& colours, const std::vecto
 	}
     tex = SDL_CreateTextureFromSurface(graphics->GetRenderer(), surf);
     SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_PIXELART);
+	SDL_DestroyPalette(pal);
 }
 
 SDL_Texture* Texture::GetSdlTexture()

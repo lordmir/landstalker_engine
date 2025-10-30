@@ -8,7 +8,7 @@ class VarWidthFont : public Font
 public:
     VarWidthFont(std::shared_ptr<Texture> tileset, std::string charset,
         std::unordered_map<char, CONTROL_CHAR> control_chars,
-        unsigned int space_width, unsigned int char_spacing);
+        unsigned int space_width, unsigned int char_spacing, unsigned int line_spacing);
 
     virtual std::pair<unsigned int, unsigned int> GetExtent(char c, float x_scale, float y_scale) const override;
 protected:
@@ -18,6 +18,7 @@ protected:
 private:
     std::vector<unsigned int> widths;
     unsigned int char_spacing;
+    unsigned int line_spacing;
 };
 
 #endif // _VAR_WIDTH_FONT_H_

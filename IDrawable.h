@@ -1,9 +1,11 @@
 #ifndef _IDRAWABLE_H_
 #define _IDRAWABLE_H_
 
+#include "IUpdatable.h"
+#include "ITickable.h"
 #include <SDL3/SDL.h>
 
-class IDrawable
+class IDrawable : public ITickable, public IUpdatable
 {
 public:
     virtual ~IDrawable() = default;

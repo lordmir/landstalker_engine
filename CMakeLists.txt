@@ -27,6 +27,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Utils.cpp
     Graphics.cpp
     Keyboard.cpp
+    Timer.cpp
     Texture.cpp
     Palette.cpp
     Font.cpp
@@ -36,6 +37,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     UIBox.cpp
     TextBox.cpp
     InputBox.cpp
+    Hud.cpp
     main.cpp
 )
 TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})

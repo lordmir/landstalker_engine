@@ -12,6 +12,7 @@ class Texture
 public:
     struct Tile
     {
+        Tile(int index = 0, bool vflip = false, bool hflip = false) : index(index), vflip(vflip), hflip(hflip) {}
         int index;
         bool vflip;
         bool hflip;
