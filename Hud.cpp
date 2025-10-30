@@ -1,5 +1,6 @@
 #include "Hud.h"
 #include <cassert>
+#include <format>
 
 static constexpr unsigned int GetHealthSmallHeartsCount(unsigned int health)
 {
