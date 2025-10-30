@@ -5,6 +5,7 @@
 #include <SDL3/SDL_pixels.h>
 #include <format>
 #include <algorithm>
+#include <cmath>
 
 class FpsBox : public TextBox
 {
