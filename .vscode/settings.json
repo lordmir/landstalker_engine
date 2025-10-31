@@ -89,7 +89,14 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "sdl_scancode.h": "c",
-        "set": "cpp"
+        "set": "cpp",
+        "any": "cpp",
+        "condition_variable": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible"
 }

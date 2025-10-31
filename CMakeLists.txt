@@ -4,7 +4,6 @@ set(CMAKE_CXX_STANDARD 20)
 if(EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
-include(ExternalProject)
 
 # set the output directory for built objects.
 # This makes sure that the dynamic library goes into the build directory automatically.
@@ -66,6 +65,8 @@ set(YAML_USE_SYSTEM_GTEST OFF CACHE BOOL "" FORCE)
 set(YAML_ENABLE_PIC ON CACHE BOOL "" FORCE)
 add_subdirectory(third_party/yaml-cpp EXCLUDE_FROM_ALL)
 
+add_subdirectory(modules/liblandstalker)
+
 # Create your game executable target as usual
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
 
@@ -86,4 +87,4 @@ else()
 endif()
 
 # Link to the actual SDL3 library.
-target_link_libraries(dds520 PRIVATE SDL3::SDL3 yaml-cpp)
+target_link_libraries(dds520 PRIVATE SDL3::SDL3 yaml-cpp liblandstalker)
