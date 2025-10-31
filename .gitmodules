@@ -1,18 +1,18 @@
-[submodule "vendored/SDL"]
+[submodule "third_party/SDL"]
 	path = third_party/SDL
 	url = git@github.com:libsdl-org/SDL.git
 [submodule "third_party/libpng"]
 	path = third_party/libpng
-	url = https://github.com/pnggroup/libpng.git
+	url = git@github.com:pnggroup/libpng.git
 [submodule "third_party/zlib"]
 	path = third_party/zlib
-	url = https://github.com/madler/zlib.git
+	url = git@github.com:madler/zlib.git
 [submodule "third_party/yaml-cpp"]
 	path = third_party/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git
+	url = git@github.com:jbeder/yaml-cpp.git
 [submodule "third_party/rapidcsv"]
 	path = third_party/rapidcsv
-	url = https://github.com/d99kris/rapidcsv.git
-[submodule "third_party/liblandstalker"]
+	url = git@github.com:d99kris/rapidcsv.git
+[submodule "modules/liblandstalker"]
 	path = modules/liblandstalker
-	url = https://github.com/lordmir/liblandstalker.git
+	url = git@github.com:lordmir/liblandstalker.git
