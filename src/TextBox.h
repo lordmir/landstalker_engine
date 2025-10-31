@@ -30,8 +30,8 @@ public:
     void SetMaxSize(unsigned int width, unsigned int height);
     void ResetMaxSize();
 
-    virtual void SetX(unsigned int x);
-    virtual void SetY(unsigned int y);
+    virtual void SetX(unsigned int x) override;
+    virtual void SetY(unsigned int y) override;
 
     void RecalculateSize();
     virtual void Draw(SDL_Renderer* renderer) override;

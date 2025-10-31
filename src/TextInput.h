@@ -11,7 +11,7 @@ public:
     TextInput(std::shared_ptr<Font> font, unsigned int x, unsigned int y, const std::string& label, float scale = 1.0f);
     virtual ~TextInput() = default;
 
-    virtual void SetLabelText(const std::string& text);
+    virtual void SetLabelText(const std::string& text) override;
     void SetInputText(const std::string& text);
     const std::string& GetInputText() const;
 

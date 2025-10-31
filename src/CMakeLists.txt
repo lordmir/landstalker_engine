@@ -20,5 +20,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     TextBox.cpp
     InputBox.cpp
     Hud.cpp
+    Bitmap.cpp
+    Tileset.cpp
     main.cpp
 )

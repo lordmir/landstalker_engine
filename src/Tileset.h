@@ -19,8 +19,8 @@ public:
         bool hflip;
     };
 
-    Tileset(const std::vector<uint8_t> pixels, unsigned int tile_width = 8, unsigned int tile_height = 8, unsigned int bitdepth = 4);
-    Tileset(const std::filesystem::path& path, unsigned int tile_width, unsigned int tile_height, unsigned int bitdepth);
+    Tileset(const std::vector<uint8_t> pixels, unsigned int tile_width = 8, unsigned int tile_height = 8, unsigned int bitdepth = 4, std::optional<unsigned int> tile_count = std::nullopt);
+    Tileset(const std::filesystem::path& path, unsigned int tile_width, unsigned int tile_height, unsigned int bitdepth, std::optional<unsigned int> tile_count = std::nullopt);
     Tileset(unsigned int tile_width = 8, unsigned int tile_height = 8, unsigned int bitdepth = 4, unsigned int tile_count = 1);
 
     static std::shared_ptr<Tileset> CreateFromPng(const std::filesystem::path& path, unsigned int tile_width, unsigned int tile_height, unsigned int bpp = 32,

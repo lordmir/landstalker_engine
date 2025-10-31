@@ -12,7 +12,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIGURATION>")
 
 if(EMSCRIPTEN)
     set(ASSETS_PATH "/assets")
-    add_definitions("-fexceptions -g")
+    add_definitions("-sUSE_LIBPNG -fexceptions")
 else()
     set(ASSETS_PATH "./assets")
 endif()
@@ -34,7 +34,8 @@ else()
 endif()
 
 # Emscripten has it's own version of libpng
-if(NOT(EMSCRIPTEN))
+if(EMSCRIPTEN)
+else()
     set(ZLIB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
     set(ZLIB_BUILD_SHARED ON CACHE BOOL "" FORCE)
     set(ZLIB_BUILD_STATIC ON CACHE BOOL "" FORCE)
@@ -65,7 +66,8 @@ set(YAML_USE_SYSTEM_GTEST OFF CACHE BOOL "" FORCE)
 set(YAML_ENABLE_PIC ON CACHE BOOL "" FORCE)
 add_subdirectory(third_party/yaml-cpp EXCLUDE_FROM_ALL)
 
-add_subdirectory(modules/liblandstalker)
+
+add_subdirectory(modules/liblandstalker EXCLUDE_FROM_ALL)
 
 # Create your game executable target as usual
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
@@ -76,6 +78,7 @@ TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})
 
 # Copy assets from source to build
 if(EMSCRIPTEN)
+    add_compile_options(-sUSE_LIBPNG)
     set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sUSE_LIBPNG --embed-file ../${ASSETS_PATH}")
 else()
     target_link_libraries(dds520 PRIVATE png_static)

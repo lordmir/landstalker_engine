@@ -96,7 +96,10 @@
         "source_location": "cpp",
         "stack": "cpp",
         "unordered_set": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "bitset": "cpp",
+        "semaphore": "cpp",
+        "__config": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible"
 }
