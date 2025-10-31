@@ -66,7 +66,7 @@ add_subdirectory(third_party/yaml-cpp EXCLUDE_FROM_ALL)
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
 
 add_executable(${CMAKE_PROJECT_NAME} WIN32)
-add_subdirectory(${CMAKE_PROJECT_NAME})
+add_subdirectory("src")
 TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})
 
 # Copy assets from source to build
