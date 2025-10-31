@@ -23,7 +23,7 @@
 #include "FpsBox.h"
 #include "HudDemo.h"
 
-const std::string CHARSET = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz*.,?!/<>:-'\"%#&()=[]{}@";
+const std::string CHARSET = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz*.,?!/<>:-'\"%#&()=_+[]@";
 std::shared_ptr<Graphics> graphics;
 std::vector<std::shared_ptr<IDrawable>> drawables;
 std::shared_ptr<InputBox> inputbox;

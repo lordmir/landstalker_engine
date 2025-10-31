@@ -10,17 +10,27 @@ class Font
 public:
     enum class CONTROL_CHAR
     {
-        PRINTABLE,
         INVALID,
-        NEWLINE,
-        STRING_START,
-        STRING_END,
-        PROMPT_TO_CONTINUE,
-        GET_YES_OR_NO,
-        PAUSE_1S,
-        LINE_BREAK_HINT,
-        HYPHENATION_HINT,
-        BREAKING_HYPHEN
+        PRINTABLE,
+        STRING_START = 0x55,
+        SELECTION_POINT = 0x56,
+        NEWLINE = 0x57,
+        GET_YES_OR_NO = 0x58,
+        PAUSE_1S_NOSKIP = 0x59,
+        NUMERIC_VAR = 0x5A,
+        SPEAKER_NAME = 0x5B,
+        STRING_END = 0x5E,
+        ITEM_NAME = 0x5F,
+        STRING_VAR = 0x60,
+        PROMPT = 0x62,
+        NEWLINE_AND_PROMPT = 0x63,
+        PAUSE_1S = 0x64,
+        PAUSE_1_5S = 0x65,
+        PAUSE_2S = 0x66,
+        SET_COLOUR = 0x68,
+        BREAKING_HYPHEN = 0x69,
+        LINE_BREAK_HINT = 0x6A,
+        HYPHENATION_HINT = 0x6B
     };
 
     Font(std::shared_ptr<Texture> tileset, std::string charset, std::unordered_map<char, CONTROL_CHAR> control_chars);
@@ -40,7 +50,7 @@ public:
     std::vector<std::string> Split(const std::string& input, const std::string& delimiters = " -.\n", bool strip_spaces = false) const;
     std::string Wrap(const std::string& input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale, const std::string& breaking_chars = " -.\n") const;
     std::string Constrain(const std::string& input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale) const;
-    
+
     bool IsValid(char c) const;
     virtual unsigned int GetCharHeight() const { return texture->GetTileHeight(); }
     virtual unsigned int GetCharWidth() const { return texture->GetTileWidth(); }
