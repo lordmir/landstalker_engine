@@ -13,3 +13,6 @@
 [submodule "third_party/rapidcsv"]
 	path = third_party/rapidcsv
 	url = https://github.com/d99kris/rapidcsv.git
+[submodule "third_party/liblandstalker"]
+	path = modules/liblandstalker
+	url = https://github.com/lordmir/liblandstalker.git

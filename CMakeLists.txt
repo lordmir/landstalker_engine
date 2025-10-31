@@ -34,21 +34,25 @@ else()
     message(STATUS "Git not found; skipping automatic git submodule initialization")
 endif()
 
+# Emscripten has it's own version of libpng
+if(NOT(EMSCRIPTEN))
+    set(ZLIB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_SHARED ON CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_STATIC ON CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_MINIZIP OFF CACHE BOOL "" FORCE)
+    set(ZLIB_ROOT "${CMAKE_SOURCE_DIR}/third_party/zlib")
+    add_subdirectory(third_party/zlib EXCLUDE_FROM_ALL)
 
-set(ZLIB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
-set(ZLIB_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-set(ZLIB_BUILD_STATIC ON CACHE BOOL "" FORCE)
-set(ZLIB_BUILD_MINIZIP OFF CACHE BOOL "" FORCE)
-set(ZLIB_ROOT "${CMAKE_SOURCE_DIR}/third_party/zlib")
-add_subdirectory(third_party/zlib EXCLUDE_FROM_ALL)
-
-set(ZLIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/zlib/")
-set(ZLIB_LIBRARY zlib)
-set(PNG_STATIC ON CACHE BOOL "" FORCE)
-set(PNG_TOOLS OFF CACHE BOOL "" FORCE)
-set(PNG_BUILD_ZLIB OFF CACHE BOOL "" FORCE)
-set(PNG_TESTS OFF CACHE BOOL "" FORCE)
-add_subdirectory(third_party/libpng EXCLUDE_FROM_ALL)
+    set(ZLIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/third_party/zlib/")
+    set(ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
+    set(ZLIB_LIBRARY zlib)
+    set(PNG_SHARED OFF CACHE BOOL "" FORCE)
+    set(PNG_STATIC ON CACHE BOOL "" FORCE)
+    set(PNG_TOOLS OFF CACHE BOOL "" FORCE)
+    set(PNG_BUILD_ZLIB OFF CACHE BOOL "" FORCE)
+    set(PNG_TESTS OFF CACHE BOOL "" FORCE)
+    add_subdirectory(third_party/libpng EXCLUDE_FROM_ALL)
+endif()
 
 add_subdirectory(third_party/SDL EXCLUDE_FROM_ALL)
 
@@ -71,8 +75,9 @@ TARGET_COMPILE_OPTIONS(${CMAKE_PROJECT_NAME} PRIVATE ${C_FLAGS})
 
 # Copy assets from source to build
 if(EMSCRIPTEN)
-    set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS --embed-file ../${ASSETS_PATH}")
+    set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sUSE_LIBPNG --embed-file ../${ASSETS_PATH}")
 else()
+    target_link_libraries(dds520 PRIVATE png_static)
     add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -81,4 +86,4 @@ else()
 endif()
 
 # Link to the actual SDL3 library.
-target_link_libraries(dds520 PRIVATE SDL3::SDL3 png_static yaml-cpp)
+target_link_libraries(dds520 PRIVATE SDL3::SDL3 yaml-cpp)
