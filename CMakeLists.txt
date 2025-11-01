@@ -90,4 +90,4 @@ else()
 endif()
 
 # Link to the actual SDL3 library.
-target_link_libraries(dds520 PRIVATE SDL3::SDL3 yaml-cpp liblandstalker)
+target_link_libraries(dds520 PRIVATE SDL3::SDL3 yaml-cpp::yaml-cpp landstalker)
