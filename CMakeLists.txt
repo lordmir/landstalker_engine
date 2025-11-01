@@ -67,7 +67,7 @@ set(YAML_ENABLE_PIC ON CACHE BOOL "" FORCE)
 add_subdirectory(third_party/yaml-cpp EXCLUDE_FROM_ALL)
 
 
-add_subdirectory(modules/liblandstalker EXCLUDE_FROM_ALL)
+add_subdirectory(modules/liblandstalker/landstalker EXCLUDE_FROM_ALL)
 
 # Create your game executable target as usual
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
