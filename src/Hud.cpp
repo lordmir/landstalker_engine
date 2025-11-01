@@ -176,8 +176,8 @@ unsigned int Hud::RenderHealthHearts(unsigned int col)
 
 unsigned int Hud::RenderHealthSmallHearts(unsigned int col)
 {
-    const unsigned int num_small_hearts = GetHealthSmallHeartsCount(max_health);
-    const unsigned int filled_small_hearts = GetHealthSmallHeartsFilled(current_health);
+    const unsigned int num_small_hearts = GetHealthSmallHeartsCount(max_health % HEARTS_CAP);
+    const unsigned int filled_small_hearts = GetHealthSmallHeartsFilled(current_health % HEARTS_CAP);
     const unsigned int small_hearts_width = GetHealthSmallHeartsWidth();
 
     for(unsigned int i = 0; i < small_hearts_width; ++i)
@@ -205,8 +205,8 @@ unsigned int Hud::RenderHealthSmallHearts(unsigned int col)
 
 unsigned int Hud::RenderHealthMediumHearts(unsigned int col)
 {
-    const unsigned int num_medium_hearts = GetHealthMediumHeartsCount(max_health);
-    const unsigned int filled_medium_hearts = GetHealthMediumHeartsFilled(current_health);
+    const unsigned int num_medium_hearts = GetHealthMediumHeartsCount(max_health % HEARTS_CAP);
+    const unsigned int filled_medium_hearts = GetHealthMediumHeartsFilled(current_health % HEARTS_CAP);
     const unsigned int medium_hearts_width = GetHealthMediumHeartsWidth();
 
     if(num_medium_hearts > 0)
@@ -255,8 +255,8 @@ unsigned int Hud::RenderHealthMediumHearts(unsigned int col)
 
 unsigned int Hud::RenderHealthLargeHearts(unsigned int col)
 {
-    const unsigned int num_large_hearts = GetHealthLargeHeartsCount(max_health);
-    const unsigned int filled_large_hearts = GetHealthLargeHeartsFilled(current_health);    
+    const unsigned int num_large_hearts = GetHealthLargeHeartsCount(max_health % HEARTS_CAP);
+    const unsigned int filled_large_hearts = GetHealthLargeHeartsFilled(current_health % HEARTS_CAP);    
     const unsigned int large_hearts_width = GetHealthLargeHeartsWidth();
 
     unsigned int cur_col = col - 2;

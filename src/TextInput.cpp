@@ -34,7 +34,7 @@ const std::string& TextInput::GetInputText() const
 void TextInput::OnKeyDown(SDL_Scancode scancode, SDL_Keymod mod)
 {
     SDL_Keycode keycode = SDL_GetKeyFromScancode(scancode, mod, false);
-    if(keycode == SDLK_BACKSPACE || keycode == SDLK_DELETE)
+    if (keycode == SDLK_BACKSPACE || keycode == SDLK_DELETE)
     {
         if(!input_text.empty())
         {
@@ -42,7 +42,7 @@ void TextInput::OnKeyDown(SDL_Scancode scancode, SDL_Keymod mod)
             UpdateLabel();
         }
     }
-    else if(keycode == SDLK_RETURN || keycode == SDLK_KP_ENTER)
+    else if (keycode == SDLK_RETURN || keycode == SDLK_KP_ENTER)
     {
         if(font->IsValid('\n'))
         {
@@ -50,7 +50,12 @@ void TextInput::OnKeyDown(SDL_Scancode scancode, SDL_Keymod mod)
             UpdateLabel();
         }
     }
-    else if(font->IsValid(static_cast<char>(keycode)))
+    else if (keycode == SDLK_V && (mod & (SDL_KMOD_LCTRL | SDL_KMOD_RCTRL)))
+    {
+        input_text += SDL_GetClipboardText();
+        UpdateLabel();
+    }
+    else if (keycode < 256 && font->IsValid(static_cast<char>(keycode)))
     {
         char c = static_cast<char>(keycode);
         input_text += c;

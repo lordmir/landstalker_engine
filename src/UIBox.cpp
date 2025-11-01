@@ -111,12 +111,34 @@ void UIBox::SetInternalHeightPixels(unsigned int h)
 
 void UIBox::SetInternalWidthTiles(unsigned int w)
 {
-    width = w; PrepareTilemap();
+    width = w;
+    PrepareTilemap();
 }
 
 void UIBox::SetInternalHeightTiles(unsigned int h)
 {
-    height = h; PrepareTilemap();
+    height = h;
+    PrepareTilemap();
+}
+
+void UIBox::SetExternalWidthPixels(unsigned int w)
+{
+    SetExternalWidthTiles((w + tile_width - 1) / tile_width);
+}
+
+void UIBox::SetExternalHeightPixels(unsigned int h)
+{
+    SetExternalHeightTiles((h + tile_height - 1) / tile_height);
+}
+
+void UIBox::SetExternalWidthTiles(unsigned int w)
+{
+    SetInternalWidthTiles(w - border_thickness * 2);
+}
+
+void UIBox::SetExternalHeightTiles(unsigned int h)
+{
+    SetInternalHeightTiles(h - border_thickness * 2);
 }
 
 void UIBox::SetXScale(float xs)
