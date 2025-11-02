@@ -37,15 +37,22 @@ jobs:
         run: |
           cmake -S . -B build
 
-      - name: 'Build'
+      - name: 'Build Release'
         working-directory: ${{github.workspace}}/landstalker_engine
         run: |
-          cmake --build build --config Release --verbose
+          cmake --build build --config Release -j32
+          cmake --install build --prefix ./release --config Release
+
+      - name: 'Build Debug'
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          cmake --build build --config Release -j32
+          cmake --install build --prefix ./debug --config Release
 
       - name: Compress artifacts
-        working-directory: ${{github.workspace}}/landstalker_engine/build
+        working-directory: ${{github.workspace}}/landstalker_engine
         shell: bash
-        run: tar zvcf landstalker_engine.tar.gz dds520 libSDL3.so assets/
+        run: tar zvcf landstalker_engine.tar.gz ./debug ./release
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

@@ -31,13 +31,20 @@ jobs:
         run: |
           cmake -S . -B build
 
-      - name: 'Build'
+      - name: 'Build Release'
         working-directory: ${{github.workspace}}/landstalker_engine
         run: |
-          cmake --build build --config Release --verbose
+          cmake --build build --config Release -j32
+          cmake --install build --prefix ./release --config Release
+
+      - name: 'Build Debug'
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          cmake --build build --config Debug -j32
+          cmake --install build --prefix ./debug --config Debug
 
       - name: Compress artifacts
-        working-directory: ${{github.workspace}}/landstalker_engine/build/Release
+        working-directory: ${{github.workspace}}/landstalker_engine
         run: Compress-Archive -Path assets, dds520.exe, SDL3.dll -Destination landstalker_engine.zip
 
       - name: Archive artifacts
