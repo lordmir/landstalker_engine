@@ -45,7 +45,7 @@ function(InstallLibpng)
     FetchContent_Declare(
         png
         GIT_REPOSITORY https://github.com/pnggroup/libpng.git
-        GIT_TAG "7c67f70da1db5f1d7a75cf518d8e5bd704ba89ce" # "libpng18"
+        GIT_TAG "2b978915d82377df13fcbb1fb56660195ded868a" # "v1.6.50"
         EXCLUDE_FROM_ALL
     )
     set(PNG_SHARED OFF CACHE BOOL "" FORCE)
