@@ -4,6 +4,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 include(dependencies.cmake)
 
+set(LANDSTALKER_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+
 UpdateSubmodules()
 InstallDependencies()
 

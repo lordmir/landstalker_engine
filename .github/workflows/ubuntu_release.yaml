@@ -40,14 +40,16 @@ jobs:
       - name: 'Build Release'
         working-directory: ${{github.workspace}}/landstalker_engine
         run: |
-          cmake --build build --config Release -j32
+          cmake -S . -B build -DLANDSTALKER_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -j32
           cmake --install build --prefix ./release --config Release
 
       - name: 'Build Debug'
         working-directory: ${{github.workspace}}/landstalker_engine
         run: |
-          cmake --build build --config Release -j32
-          cmake --install build --prefix ./debug --config Release
+          cmake -S . -B build_debug -DLANDSTALKER_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build_debug -j32
+          cmake --install build_debug --prefix ./debug
 
       - name: Compress artifacts
         working-directory: ${{github.workspace}}/landstalker_engine
