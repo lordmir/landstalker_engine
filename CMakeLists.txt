@@ -38,7 +38,7 @@ if (WIN32)
     )
 endif ()
 
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 yaml-cpp::yaml-cpp landstalker)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL3::SDL3 yaml-cpp::yaml-cpp pugixml::static landstalker)
 
 install(
     TARGETS ${CMAKE_PROJECT_NAME}

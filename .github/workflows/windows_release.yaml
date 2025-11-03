@@ -45,7 +45,7 @@ jobs:
 
       - name: Compress artifacts
         working-directory: ${{github.workspace}}/landstalker_engine
-        run: Compress-Archive -Path assets, dds520.exe, SDL3.dll -Destination landstalker_engine.zip
+        run: Compress-Archive -Path debug/*,release/* -Destination landstalker_engine.zip
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4

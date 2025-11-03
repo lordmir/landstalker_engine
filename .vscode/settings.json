@@ -99,7 +99,16 @@
         "valarray": "cpp",
         "bitset": "cpp",
         "semaphore": "cpp",
-        "__config": "cpp"
+        "__config": "cpp",
+        "complex": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "execution": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "strstream": "cpp",
+        "typeindex": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible"
 }
