@@ -42,7 +42,7 @@ jobs:
         run: |
           cmake -S . -B build -DLANDSTALKER_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release
           cmake --build build -j32
-          cmake --install build --prefix ./release --config Release
+          cmake --install build --prefix ./release
 
       - name: 'Build Debug'
         working-directory: ${{github.workspace}}/landstalker_engine
@@ -51,13 +51,10 @@ jobs:
           cmake --build build_debug -j32
           cmake --install build_debug --prefix ./debug
 
-      - name: Compress artifacts
-        working-directory: ${{github.workspace}}/landstalker_engine
-        shell: bash
-        run: tar zvcf landstalker_engine.tar.gz ./debug ./release
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: landstalker_engine_binary_ubuntu
-          path: ${{github.workspace}}/landstalker_engine/build/landstalker_engine.tar.gz
+          path: |
+            ${{github.workspace}}/landstalker_engine/release
+            ${{github.workspace}}/landstalker_engine/debug

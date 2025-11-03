@@ -43,12 +43,10 @@ jobs:
           cmake --build build --config Debug -j32
           cmake --install build --prefix ./debug --config Debug
 
-      - name: Compress artifacts
-        working-directory: ${{github.workspace}}/landstalker_engine
-        run: Compress-Archive -Path debug/*,release/* -Destination landstalker_engine.zip
-
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: landstalker_engine_binary_windows
-          path: ${{github.workspace}}/landstalker_engine/build/Release/landstalker_engine.zip
+          path:  |
+            ${{github.workspace}}/landstalker_engine/release
+            ${{github.workspace}}/landstalker_engine/debug
