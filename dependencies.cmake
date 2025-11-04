@@ -1,6 +1,16 @@
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
+if (${LANDSTALKER_BUILD_SHARED})
+    set(LANDSTALKER_BUILD_STATIC OFF CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    message(STATUS "Configuring dependencies for shared library build")
+else()
+    set(LANDSTALKER_BUILD_STATIC ON CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    message(STATUS "Configuring dependencies for static library build")
+endif()
+
 function(UpdateSubmodules)
     find_package(Git QUIET)
     if(GIT_FOUND)
@@ -24,20 +34,26 @@ function(InstallZlib)
     FetchContent_Declare(
         zlib
         GIT_REPOSITORY https://github.com/madler/zlib.git
-        GIT_TAG "51b7f2abdade71cd9bb0e7a373ef2610ec6f9daf" # "v1.3.1"
+        GIT_TAG "5a82f71ed1dfc0bec044d9702463dbdf84ea3b71" # "master"
+        GIT_SHALLOW TRUE
         EXCLUDE_FROM_ALL
     )
     set(ZLIB_BUILD_TESTING OFF CACHE BOOL "" FORCE)
-    set(ZLIB_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-    set(ZLIB_BUILD_STATIC ON CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_SHARED ${LANDSTALKER_BUILD_SHARED} CACHE BOOL "" FORCE)
+    set(ZLIB_BUILD_STATIC ${LANDSTALKER_BUILD_STATIC} CACHE BOOL "" FORCE)
     set(ZLIB_BUILD_MINIZIP OFF CACHE BOOL "" FORCE)
     set(ZLIB_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(ZLIB_ OFF CACHE BOOL "" FORCE)
     message("Configuring ZLIB...")
     FetchContent_MakeAvailable(zlib)
-    add_library(ZLIB::ZLIB ALIAS zlibstatic)
+    if(${LANDSTALKER_BUILD_STATIC})
+        add_library(ZLIB::ZLIB ALIAS zlibstatic)
+    endif()
     set(ZLIB_ROOT "${zlib_SOURCE_DIR}" CACHE INTERNAL "Root for the zlib library, used by libpng")
-    set(ZLIB_LIBRARY zlibstatic CACHE INTERNAL "" FORCE)
-    set(ZLIB_INCLUDE_DIR "${zlib_SOURCE_DIR};${zlib_BINARY_DIR}" CACHE INTERNAL "" FORCE)
+    set(ZLIB_LIBRARY ZLIB::ZLIB PARENT_SCOPE)
+    set(ZLIB_LIBRARIES ZLIB::ZLIB PARENT_SCOPE)
+    set(ZLIB_INCLUDE_DIR ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR} PARENT_SCOPE)
+    set(ZLIB_INCLUDE_DIRS ${zlib_SOURCE_DIR} ${zlib_BINARY_DIR} PARENT_SCOPE)
 endfunction()
 
 function(InstallLibpng)
@@ -46,10 +62,11 @@ function(InstallLibpng)
         png
         GIT_REPOSITORY https://github.com/pnggroup/libpng.git
         GIT_TAG "2b978915d82377df13fcbb1fb56660195ded868a" # "v1.6.50"
+        GIT_SHALLOW TRUE
         EXCLUDE_FROM_ALL
     )
-    set(PNG_SHARED OFF CACHE BOOL "" FORCE)
-    set(PNG_STATIC ON CACHE BOOL "" FORCE)
+    set(PNG_SHARED ${LANDSTALKER_BUILD_SHARED} CACHE BOOL "" FORCE)
+    set(PNG_STATIC ${LANDSTALKER_BUILD_STATIC} CACHE BOOL "" FORCE)
     set(PNG_TOOLS OFF CACHE BOOL "" FORCE)
     set(PNG_BUILD_ZLIB OFF CACHE BOOL "" FORCE)
     set(PNG_TESTS OFF CACHE BOOL "" FORCE)
@@ -63,17 +80,18 @@ function(InstallYamlcpp)
     FetchContent_Declare(
         yaml-cpp
         GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-        GIT_TAG "0579ae3d976091d7d664aa9d2527e0d0cff25763" # "yaml-cpp-0.7.0"
+        GIT_TAG "a83cd31548b19d50f3f983b069dceb4f4d50756d" # "master"
+        GIT_SHALLOW TRUE
         EXCLUDE_FROM_ALL
     )
     set(YAML_CPP_BUILD_CONTRIB ON CACHE BOOL "" FORCE)
     set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
-    set(YAML_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(YAML_BUILD_SHARED_LIBS ${LANDSTALKER_BUILD_SHARED} CACHE BOOL "" FORCE)
     set(YAML_CPP_INSTALL OFF CACHE BOOL "" FORCE)
     set(YAML_CPP_FORMAT_SOURCE OFF CACHE BOOL "" FORCE)
     set(YAML_CPP_DISABLE_UNINSTALL ON CACHE BOOL "" FORCE)
     set(YAML_USE_SYSTEM_GTEST OFF CACHE BOOL "" FORCE)
-    set(YAML_ENABLE_PIC ON CACHE BOOL "" FORCE)
+    set(YAML_ENABLE_PIC ${LANDSTALKER_BUILD_SHARED} CACHE BOOL "" FORCE)
     message("Configuring YAML-CPP...")
     FetchContent_MakeAvailable(yaml-cpp)
 endfunction()
@@ -87,7 +105,6 @@ function(InstallPugixml)
         GIT_SHALLOW TRUE
         EXCLUDE_FROM_ALL
     )
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
     message("Configuring Pugixml...")
     FetchContent_MakeAvailable(pugixml)
 endfunction()

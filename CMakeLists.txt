@@ -2,35 +2,68 @@ cmake_minimum_required(VERSION 3.16)
 project(dds520)
 set(CMAKE_CXX_STANDARD 20)
 
+option(LANDSTALKER_BUILD_SHARED "Build liblandstalker as a shared library" OFF)
+option(INSTALL_DEPS "Automatically download and build dependencies" ON)
+
 include(dependencies.cmake)
 
-set(LANDSTALKER_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-
 UpdateSubmodules()
-InstallDependencies()
+
+# Download dependencies if this is a standalone build
+if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    InstallDependencies()
+endif()
+
+if(WIN32)
+  set(CMAKE_DEBUG_POSTFIX d)
+endif()
+
+if(${LANDSTALKER_BUILD_SHARED})
+    if(EMSCRIPTEN)
+        message(FATAL_ERROR "LANDSTALKER_BUILD_SHARED can not be used when building for Emscripten")
+    endif()
+
+    set(${CMAKE_PROJECT_NAME}_RUNTIME_DEPENDENCIES png_shared yaml-cpp zlib pugixml-shared)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ZLIB::ZLIB png_shared yaml-cpp::yaml-cpp pugixml::shared)
+else()
+    add_library(${CMAKE_PROJECT_NAME} STATIC)
+
+
+    if(EMSCRIPTEN)
+        add_compile_options(-sUSE_LIBPNG)
+        add_definitions("-sUSE_LIBPNG -fexceptions")
+        set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sUSE_LIBPNG")
+        target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE yaml-cpp::yaml-cpp pugixml::static)
+    else()
+        target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ZLIB::ZLIB png_static yaml-cpp::yaml-cpp pugixml::static)
+    endif()
+endif()
+
+if (MSVC)
+    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -D_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
+endif()
+
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 add_subdirectory(modules/liblandstalker EXCLUDE_FROM_ALL)
 
 add_executable(${CMAKE_PROJECT_NAME} WIN32)
+
 # Copy assets from source to build
 if(EMSCRIPTEN)
     set(ASSETS_PATH "/assets")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    add_compile_options(-sUSE_LIBPNG -fexceptions)
-    set(CMAKE_EXE_LINKER_FLAGS "-sASSERTIONS -sUSE_LIBPNG --embed-file ../${ASSETS_PATH}")
 else()
     set(ASSETS_PATH "./assets")
-    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE png_static zlibstatic)
     add_custom_command(
         TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/${ASSETS_PATH}
         $<TARGET_FILE_DIR:${CMAKE_PROJECT_NAME}>/${ASSETS_PATH})
 endif()
-
 add_compile_definitions(ASSETS_PATH="${ASSETS_PATH}" PROJECT_NAME="${CMAKE_PROJECT_NAME}")
-add_subdirectory("src")
 
+add_subdirectory("src")
 
 if (WIN32)
     add_custom_command (
