@@ -14,9 +14,7 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     InstallDependencies()
 endif()
 
-if(WIN32)
-  set(CMAKE_DEBUG_POSTFIX d)
-endif()
+add_executable(${CMAKE_PROJECT_NAME} WIN32)
 
 if(${LANDSTALKER_BUILD_SHARED})
     if(EMSCRIPTEN)
@@ -43,8 +41,6 @@ endif()
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 add_subdirectory(modules/liblandstalker EXCLUDE_FROM_ALL)
-
-add_executable(${CMAKE_PROJECT_NAME} WIN32)
 
 # Copy assets from source to build
 if(EMSCRIPTEN)
