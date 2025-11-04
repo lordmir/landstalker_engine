@@ -26,9 +26,6 @@ if(${LANDSTALKER_BUILD_SHARED})
     set(${CMAKE_PROJECT_NAME}_RUNTIME_DEPENDENCIES png_shared yaml-cpp zlib pugixml-shared)
     target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ZLIB::ZLIB png_shared yaml-cpp::yaml-cpp pugixml::shared)
 else()
-    add_library(${CMAKE_PROJECT_NAME} STATIC)
-
-
     if(EMSCRIPTEN)
         add_compile_options(-sUSE_LIBPNG)
         add_definitions("-sUSE_LIBPNG -fexceptions")
