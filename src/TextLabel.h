@@ -5,6 +5,7 @@
 #include "Font.h"
 #include <string>
 #include <memory>
+#include <cmath>
 
 class TextLabel : public Drawable
 {
@@ -20,14 +21,28 @@ public:
     unsigned int GetY() const { return y; }
     void SetX(unsigned int x) { this->x = x; }
     void SetY(unsigned int y) { this->y = y; }
+    std::pair<unsigned int, unsigned int> GetMaxSize() const;
+    void SetMaxSize(unsigned int max_width, unsigned int max_height);
+    void ResetMaxSize();
+    bool GetWrapEnabled() const;
+    void SetWrapEnabled(bool wrap);
+
+    unsigned int GetCharWidth() const { return static_cast<unsigned int>(ceil(font->GetCharWidth() * scale_x)); }
+    unsigned int GetCharHeight() const { return static_cast<unsigned int>(ceil(font->GetCharHeight() * scale_y)); }
 
     virtual void Draw(SDL_Renderer* renderer) override;
 protected:
+    void UpdateRenderText();
     std::shared_ptr<Font> font;
 private:
     std::string text;
+    std::string render_text;
     unsigned int x;
     unsigned int y;
+    unsigned int max_width;
+    unsigned int max_height;
+    bool use_max_size;
+    bool wrap;
     float scale_x;
     float scale_y;
 };

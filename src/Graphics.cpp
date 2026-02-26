@@ -7,7 +7,7 @@ Graphics::Graphics(unsigned int width, unsigned int height, const std::string& t
     : width(width), height(height), window(nullptr), renderer(nullptr)
 {
     // Create the window
-    if (!SDL_CreateWindowAndRenderer(title.c_str(), width, height, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer(title.c_str(), width, height, 0, &window, &renderer)) {
         SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
         throw std::runtime_error(SDL_GetError());
     }

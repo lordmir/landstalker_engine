@@ -37,18 +37,24 @@ jobs:
         run: |
           cmake -S . -B build
 
-      - name: 'Build'
+      - name: 'Build Release'
         working-directory: ${{github.workspace}}/landstalker_engine
         run: |
-          cmake --build build --config Release --verbose
+          cmake -S . -B build -DLANDSTALKER_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Release
+          cmake --build build -j32
+          cmake --install build --prefix ./release
 
-      - name: Compress artifacts
-        working-directory: ${{github.workspace}}/landstalker_engine/build
-        shell: bash
-        run: tar zvcf landstalker_engine.tar.gz dds520 libSDL3.so assets/
+      - name: 'Build Debug'
+        working-directory: ${{github.workspace}}/landstalker_engine
+        run: |
+          cmake -S . -B build_debug -DLANDSTALKER_BUILD_SHARED=OFF -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build_debug -j32
+          cmake --install build_debug --prefix ./debug
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: landstalker_engine_binary_ubuntu
-          path: ${{github.workspace}}/landstalker_engine/build/landstalker_engine.tar.gz
+          path: |
+            ${{github.workspace}}/landstalker_engine/release
+            ${{github.workspace}}/landstalker_engine/debug

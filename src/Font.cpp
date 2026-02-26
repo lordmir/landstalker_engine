@@ -42,17 +42,7 @@ std::pair<unsigned int, unsigned int> Font::GetExtent(std::string str, float x_s
         return {0, 0};
     }
 
-    std::vector<std::string> lines;
-    unsigned int line_begin = 0;
-    for(unsigned int i = 0; i < str.size(); ++i)
-    {
-        if(GetControlChar(str[i]) == CONTROL_CHAR::NEWLINE)
-        {
-            lines.push_back(str.substr(line_begin, i - line_begin));
-            line_begin = i + 1;
-        }
-    }
-    lines.push_back(str.substr(line_begin));
+    std::vector<std::string> lines = Split(str, "\n");
 
     std::vector<std::pair<unsigned int, unsigned int>> line_extents;
     for(const auto& line : lines)
@@ -134,6 +124,111 @@ std::pair<unsigned int, unsigned int> Font::PrintString(SDL_Renderer* renderer, 
 std::pair<unsigned int, unsigned int> Font::PrintString(SDL_Renderer* renderer, unsigned int x, unsigned int y, std::string str, float scale) const
 {
     return PrintString(renderer, x, y, str, scale, scale);
+}
+
+std::vector<std::string> Font::Split(const std::string &input, const std::string &delimiters, bool keep_delims) const
+{
+    std::vector<std::string> words;
+    std::string::size_type pos = 0;
+    std::string::size_type prev = 0;
+    
+    while ((pos = input.find_first_of(delimiters, prev)) != std::string::npos)
+    {
+        if (pos > prev)
+        {
+            std::string word = input.substr(prev, keep_delims ? pos - prev + 1 : pos - prev);
+            if(!word.empty())
+            {
+                words.push_back(word);
+            }
+        }
+        prev = pos + 1;
+    }
+    
+    if (prev < input.length())
+    {
+        std::string word = input.substr(prev, pos - prev);
+        if(!word.empty())
+        {
+            words.push_back(word);
+        }
+    }
+
+    return words;
+}
+
+std::string Font::Wrap(const std::string &input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale, const std::string &breaking_chars) const
+{
+    const unsigned int MAX_LINES = floor(max_height / GetExtent(' ', x_scale, y_scale).second);
+    auto lines = Split(input, "\n");
+    lines.resize(std::min<unsigned int>(lines.size(), MAX_LINES));
+    std::vector<std::vector<std::string>> words;
+    std::vector<std::string> out_lines;
+    std::transform(lines.begin(), lines.end(), std::back_inserter(words),
+        [&](const auto& line)
+        {
+            return Split(line, breaking_chars, true);
+        });
+    
+    for(const auto& word_line : words)
+    {
+        // Word wrap
+        std::string out_line;
+        unsigned int remaining_length = max_width;
+        for(const auto& word : word_line)
+        {
+            unsigned int word_length = GetExtent(word, x_scale, y_scale).first;
+            if(word_length < remaining_length)
+            {
+                out_line += word;
+                remaining_length -= word_length;
+            }
+            else
+            {
+                out_lines.push_back(out_line);
+                out_line = word;
+                remaining_length = max_width - word_length;
+            }
+        }
+        out_lines.push_back(out_line);
+    }
+
+    out_lines.resize(std::min<unsigned int>(out_lines.size(), MAX_LINES));
+    std::string text;
+    for(const auto line : out_lines)
+    {
+        text += line + "\n";
+    }
+    if(!text.empty())
+    {
+        text.pop_back();
+    }
+    return text;
+}
+
+std::string Font::Constrain(const std::string &input, unsigned int max_width, unsigned int max_height, double x_scale, double y_scale) const
+{
+    const unsigned int MAX_LINES = floor(max_height / GetExtent(' ', x_scale, y_scale).second);
+    auto lines = Split(input, "\n");
+    lines.resize(std::min<unsigned int>(lines.size(), MAX_LINES));
+    for (auto& line : lines)
+    {
+        while(GetExtent(line, x_scale, y_scale).first > max_width)
+        {
+            line.pop_back();
+        }
+    }
+
+    std::string text;
+    for(const auto line : lines)
+    {
+        text += line + "\n";
+    }
+    if(!text.empty())
+    {
+        text.pop_back();
+    }
+    return text;
 }
 
 SDL_FRect Font::GetSourceRect(int tile_index) const

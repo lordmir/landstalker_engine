@@ -89,7 +89,26 @@
         "xtree": "cpp",
         "xutility": "cpp",
         "sdl_scancode.h": "c",
-        "set": "cpp"
+        "set": "cpp",
+        "any": "cpp",
+        "condition_variable": "cpp",
+        "regex": "cpp",
+        "source_location": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp",
+        "valarray": "cpp",
+        "bitset": "cpp",
+        "semaphore": "cpp",
+        "__config": "cpp",
+        "complex": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "execution": "cpp",
+        "future": "cpp",
+        "shared_mutex": "cpp",
+        "stdfloat": "cpp",
+        "strstream": "cpp",
+        "typeindex": "cpp"
     },
     "cmake.options.statusBarVisibility": "visible"
 }

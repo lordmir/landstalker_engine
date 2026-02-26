@@ -107,12 +107,16 @@ public:
     float GetYScale() const;
     SDL_Color GetBackgroundColour() const;
 
-    void SetX(unsigned int nx);
-    void SetY(unsigned int ny);
+    virtual void SetX(unsigned int nx);
+    virtual void SetY(unsigned int ny);
     void SetInternalWidthPixels(unsigned int w);
     void SetInternalHeightPixels(unsigned int h);
     void SetInternalWidthTiles(unsigned int w);
     void SetInternalHeightTiles(unsigned int h);
+    void SetExternalWidthPixels(unsigned int w);
+    void SetExternalHeightPixels(unsigned int h);
+    void SetExternalWidthTiles(unsigned int w);
+    void SetExternalHeightTiles(unsigned int h);
     void SetXScale(float xs);
     void SetYScale(float ys);
     void SetScale(float xs, float ys);

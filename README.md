@@ -32,10 +32,12 @@ After developing the [Landstalker Editor](https://github.com/lordmir/landstalker
 - You will also need a C++ compiler. On Linux, `gcc` is recommended. For Windows builds, you can either use the [Visual Studio Community compiler](https://visualstudio.microsoft.com/vs/community/), or [gcc](https://github.com/skeeto/w64devkit/releases).
 - Run the following commands to build, from within the project directory:
 ```
-cmake -S . -B build
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release
+cmake --install build --prefix ./install --config Release
 ```
-- The built executable should be located in the `build` directory. On Windows, you may need to look in the `build\Release` folder.
+(Change `Release` to `Debug` for a debug build)
+- The built executable should be located in the `install/bin` directory.
 
 ## Credits
 
